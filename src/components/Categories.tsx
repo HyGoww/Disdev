@@ -19,25 +19,25 @@ const CategorieComponent = () => {
   const [users, setUsers] = useState<Users[]>([]);
 
   useEffect(() => {
-    fetch('https://server.hygoww.fr/categories')
-      .then((response) => response.json())
-      .then((data) => setCategories(data))
-      .catch((err) => {
-        console.log(
-          'Une erreur est survenue pendant la récupération des catégories : ',
-          err
-        );
-      });
+    const fetchData = async () => {
+      try {
+        const [categoriesResponse, usersResponse] = await Promise.all([
+          fetch('https://server.hygoww.fr/categories'),
+          fetch('https://server.hygoww.fr/users'),
+        ]);
 
-    fetch('https://server.hygoww.fr/users')
-      .then((response) => response.json())
-      .then((data) => setUsers(data))
-      .catch((err) => {
-        console.log(
-          'Une erreur est survenue pendant la récupération des catégories : ',
-          err
-        );
-      });
+        const [categories, users] = await Promise.all([
+          categoriesResponse.json(),
+          usersResponse.json(),
+        ]);
+
+        setCategories(categories);
+        setUsers(users);
+      } catch (err) {
+        console.log('Erreur lors de la récupération des données : ', err);
+      }
+    };
+    fetchData();
   }, []);
 
   return (

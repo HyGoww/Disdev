@@ -9,12 +9,18 @@ const FetchCategories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
-    fetch('https://server.hygoww.fr/categories')
-      .then((response) => response.json())
-      .then((data) => setCategories(data))
-      .catch((err) =>
-        console.error('Erreur lors de la récupération des catégories : ', err)
-      );
+    const fetchData = async () => {
+      try {
+        const categoriesReponse = await fetch(
+          'https://server.hygoww.fr/categories'
+        );
+        const categories = await categoriesReponse.json();
+        setCategories(categories);
+      } catch (err) {
+        console.log('Erreur lors de la récupération des données :', err);
+      }
+    };
+    fetchData();
   }, []);
 
   return (

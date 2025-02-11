@@ -31,18 +31,25 @@ const CategoryPage = () => {
   const [isLiked, setIsLiked] = useState<boolean>(false);
 
   useEffect(() => {
-    fetch(`https://server.hygoww.fr/categories/${id}`)
-      .then((res) => res.json())
-      .then((data) => setCategoryName(data.title))
-      .catch((err) => {
-        console.log('Erreur récup BDD name : ', err);
-      });
-    fetch(`https://server.hygoww.fr/categories/${id}/posts`)
-      .then((res) => res.json())
-      .then((data) => setPosts(data))
-      .catch((err) => {
-        console.log('Erreur récup BDD posts : ', err);
-      });
+    const fetchData = async () => {
+      try {
+        const [categoriesReponse, postsReponse] = await Promise.all([
+          fetch(`https://server.hygoww.fr/categories/${id}`),
+          fetch(`https://server.hygoww.fr/categories/${id}/posts`),
+        ]);
+
+        const [categories, posts] = await Promise.all([
+          categoriesReponse.json(),
+          postsReponse.json(),
+        ]);
+
+        setCategoryName(categories.title);
+        setPosts(posts);
+      } catch (err) {
+        console.log('Erreur lors de la récupération des données : ', err);
+      }
+    };
+    fetchData();
   }, [id]);
 
   useEffect(() => {

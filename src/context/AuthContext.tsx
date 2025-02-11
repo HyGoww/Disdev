@@ -31,11 +31,11 @@ export const useAuth = () => {
 // Fonction pour décoder le JWT et vérifier son expiration
 const isTokenExpired = (token: string): boolean => {
   try {
-    const payload = JSON.parse(atob(token.split('.')[1])); // Décodage de la partie payload du JWT
-    return payload.exp * 1000 < Date.now(); // Vérifie si la date d'expiration est passée
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.exp * 1000 < Date.now();
   } catch (error) {
     console.error('Erreur lors du décodage du token:', error);
-    return true; // Si erreur, on considère que le token est invalide
+    return true;
   }
 };
 
@@ -58,7 +58,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.setItem('token', newToken);
     setToken(newToken);
 
-    // Récupérer les infos de l'utilisateur après connexion
     try {
       const response = await fetch('https://server.hygoww.fr/auth/me', {
         headers: { Authorization: `Bearer ${newToken}` },
